@@ -1,3 +1,3 @@
-# AppSec-Unit1
+# AppSec Assignment
 
-https://travis-ci.com/Kadawi/AppSec.svg?token=3qzfQJBTFZ2WnexojRKT&branch=master
+[![Build Status](https://travis-ci.com/Kadawi/AppSec.svg?token=3qzfQJBTFZ2WnexojRKT&branch=master)](https://travis-ci.com/Kadawi/AppSec)
