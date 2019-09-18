@@ -1,3 +1,11 @@
 language: c
 
-script: make && make get-deps && make test
+before_install:
+        -sudo apt-get update
+        -sudo apt-get install -y check
+
+compiler: gcc
+
+script: 
+        -make
+        -make test
