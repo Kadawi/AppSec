@@ -102,7 +102,7 @@ bool load_dictionary(const char* dictionary_file, hashmap_t hashtable[]) {
 	//printf("while loop again");	
 	}
 	//Close dict_file. 
-	printf("exited while loop");
+	//printf("exited while loop");
 	//printf("%d\n", bucketempty);
 	//printf("%d\n", bucketoccupied);
  	fclose(dict_file);
@@ -114,14 +114,14 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
 { 
     //Set int num_misspelled to 0. 
 	int num_misspelled = 0;
-	printf("one");
+	//printf("one");
     //check if file pointer is valid	
-	char* line;
+	/*char* line;
 	line = malloc(4096);
 	if (line == NULL) {
 		printf("char array not allocated");
 		exit(1);
-	}
+	}*/
 	char* tmp;
 	tmp = malloc((LENGTH+1)*sizeof(char));
 	if (tmp == NULL) {
@@ -134,19 +134,19 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
 		printf("char array not allocated");
 		exit(1);
 	}
-	char* checkword;
+	/*char* checkword;
 	checkword = malloc((LENGTH+1)*sizeof(char));
 	if (checkword == NULL) {
 		printf("char array not allocated");
 		exit(1);
 	}
 	int index = 0;
-	printf("two");
+	printf("two");*/
 	if (fp == NULL) {
 		printf("File pointer is NULL");
 		exit(1);
 	}
-	printf("three not null");
+	//printf("three not null");
     //While line in fp is not EOF (end of file):
 	while ((fgets(line, sizeof(*line), fp) != NULL)) {
 		printf("entered fgets loop");
