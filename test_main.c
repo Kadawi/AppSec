@@ -1,10 +1,12 @@
 #include <check.h>
 #include "dictionary.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 #define DICTIONARY "wordlist.txt"
 #define TESTDICT "test_worlist.txt"
 
+/*
 START_TEST(test_dictionary_normal)
 {
     hashmap_t hashtable[HASH_SIZE];
@@ -14,9 +16,11 @@ START_TEST(test_dictionary_normal)
     // this as an exercise.
 }
 END_TEST
+*/
 
 START_TEST(test_check_word_normal)
 {
+    printf("begin check word test");
     hashmap_t hashtable[HASH_SIZE];
     load_dictionary(DICTIONARY, hashtable);
     const char* correct_word = "Justice";
@@ -24,19 +28,23 @@ START_TEST(test_check_word_normal)
     ck_assert(check_word(correct_word, hashtable));
     ck_assert(!check_word(punctuation_word_2, hashtable));
     // Test here: What if a word begins and ends with "?
+    printf("end of check word test");
 }
 END_TEST
 
 START_TEST(test_check_words_normal)
 {
+    printf("one");	
     hashmap_t hashtable[HASH_SIZE];
     load_dictionary(DICTIONARY, hashtable);
+    printf("two");
     char* expected[3];
     expected[0] = "sogn";
     expected[1] = "skyn";
     expected[2] = "betta";
     char *misspelled[MAX_MISSPELLED];
     FILE *fp = fopen("test1.txt", "r");
+    if (fp == NULL) {printf("pointer is null"); exit(1);}
     int num_misspelled = check_words(fp, hashtable, misspelled);
     ck_assert(num_misspelled == 3);
     bool test = strlen(misspelled[0]) == strlen(expected[0]);
