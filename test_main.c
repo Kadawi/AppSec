@@ -18,33 +18,57 @@ START_TEST(test_dictionary_normal)
 END_TEST
 */
 
+START_TEST(test_check_word_buffer_overflow){
+	hashmap_t hashtable[HASH_SIZE];
+	load_dictionary(DICTIONARY, hashtable);
+	char incorrect_word[500000];
+	for (int i = 0; i<499999; i++) incorrect_word[i] = 'A';
+	incorrect_word[499999] = '\0';
+	ck_assert(!check_word(incorrect_word, hashtable));
+}
+END_TEST
+
 START_TEST(test_check_word_normal)
 {
-    printf("begin check word test");
+    //printf("begin check word test\n");
     hashmap_t hashtable[HASH_SIZE];
     load_dictionary(DICTIONARY, hashtable);
     const char* correct_word = "Justice";
     const char* punctuation_word_2 = "pl.ace";
+    const char* question_word = "?howdy?";
     ck_assert(check_word(correct_word, hashtable));
     ck_assert(!check_word(punctuation_word_2, hashtable));
+    ck_assert(check_word(question_word, hashtable));
     // Test here: What if a word begins and ends with "?
-    printf("end of check word test");
+    //printf("end of check word test\n");
+}
+END_TEST
+
+START_TEST(test_check_words_long)
+{
+    hashmap_t hashtable[HASH_SIZE];
+    load_dictionary(DICTIONARY, hashtable);
+    char *misspelled[MAX_MISSPELLED];
+    FILE *fp = fopen("LongInput.txt", "r");
+    if (fp == NULL) {printf("pointer is null\n"); exit(1);}
+    int num_misspelled = check_words(fp, hashtable, misspelled);
+    ck_assert(num_misspelled == 0);
 }
 END_TEST
 
 START_TEST(test_check_words_normal)
 {
-    printf("one");	
+    //printf("one\n");	
     hashmap_t hashtable[HASH_SIZE];
     load_dictionary(DICTIONARY, hashtable);
-    printf("two");
+    //printf("two\n");
     char* expected[3];
     expected[0] = "sogn";
     expected[1] = "skyn";
     expected[2] = "betta";
     char *misspelled[MAX_MISSPELLED];
     FILE *fp = fopen("test1.txt", "r");
-    if (fp == NULL) {printf("pointer is null"); exit(1);}
+    if (fp == NULL) {printf("pointer is null\n"); exit(1);}
     int num_misspelled = check_words(fp, hashtable, misspelled);
     ck_assert(num_misspelled == 3);
     bool test = strlen(misspelled[0]) == strlen(expected[0]);
@@ -66,14 +90,17 @@ check_word_suite(void)
     check_word_case = tcase_create("Core");
     tcase_add_test(check_word_case, test_check_word_normal);
     tcase_add_test(check_word_case, test_check_words_normal);
+    tcase_add_test(check_word_case, test_check_words_long);
+    tcase_add_test(check_word_case, test_check_word_buffer_overflow);
     suite_add_tcase(suite, check_word_case);
 
     return suite;
 }
 
-int
-main(void)
+int main(void)
 {
+    //fflush(stdout);
+    //printf("Main\n");	
     int failed;
     Suite *suite;
     SRunner *runner;
