@@ -14,7 +14,7 @@ bool check_word(const char* word, hashmap_t hashtable[])
     //While cursor is not NULL: 
 	while(cursor != NULL){
         //If word equals cursor->word: 
-		if(word == cursor->word) return 1;
+		if(strcmp(word, cursor->word)) return 1;
 	//return True. 
 	//set curosr to cursor->next
 		cursor = cursor->next;
@@ -32,7 +32,7 @@ bool check_word(const char* word, hashmap_t hashtable[])
 	while(cursor != NULL){
     	//if lower_case(word) equals curosr->word: 
             //return True. 
-		if(lower_word == cursor->word) return 1;
+		if(strcmp(lower_word, cursor->word)) return 1;
         //Set curosr to cursor->next. 
 		cursor = cursor->next;
 	}
@@ -114,14 +114,16 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
 { 
     //Set int num_misspelled to 0. 
 	int num_misspelled = 0;
+	char modword[LENGTH+1];
+	char end[] = "\0";
 	//printf("one");
     //check if file pointer is valid	
-	/*char* line;
+	char* line;
 	line = malloc(4096);
 	if (line == NULL) {
 		printf("char array not allocated");
 		exit(1);
-	}*/
+	}
 	char* tmp;
 	tmp = malloc((LENGTH+1)*sizeof(char));
 	if (tmp == NULL) {
@@ -148,35 +150,36 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
 	}
 	//printf("three not null");
     //While line in fp is not EOF (end of file):
-	while ((fgets(line, sizeof(*line), fp) != NULL)) {
-		printf("entered fgets loop");
+	while ((fgets(line, sizeof(line), fp) == NULL)) {
+		//printf("entered fgets loop");
 		//read the line
 		////split the line on spaces
-		if(line[strlen(line)-1]=='\n') line [strlen(line)-1]='\0';
-        	tmp = strtok(line, " ");
-		strcpy(word, tmp);
-        	for(int i = 0; i<sizeof(word); i++){
-        //For each word in line: 
-            //Remove punctuation from beginning and end of word. 
-	    		if((!(isalpha(word[i])) && index == 0) || (!(isalpha(word[i])) && (word[i+1] == ' '))){
-			}
-			else if(word[i] == ' '){
-				checkword[i] = '\0';
-				index = 0;
-				if(!check_word(checkword, hashtable)){
-					misspelled[num_misspelled] = word;
-					num_misspelled++;
-				}
-			}
-			else {
-				checkword[index] = word[i];
-				index++;
+	// assume there exists a char * tmp and a char * word.
+	if (tmp == NULL) {printf("Pointer not allocated."); exit(1);} 
+	word = strtok(tmp, " ");
+	while(word != NULL) // explicitly, but you could also do while(word)
+	{
+    	// here you do some transformations on the word, such as removing punctuation and newlines. Code isn't included so as to not give away too much of the answ
+		strncpy(modword, word, strlen(word));
+		if(!(isalpha(modword[0]))){
+			for(int i = 0; i < (strlen(word)); i++){
+				modword[i] = modword[i+1];
 			}
 		}
-	}
-            //If not check_word(word): 
+		if(!(isalpha(modword[strlen(word)]))) modword[strlen(word)] = end[0];
+	        //If not check_word(word)
+		strncpy(word, modword, strlen(word)); 
+    		if(!check_word(word, hashtable))
+    		{
+        	// here is more code. Again, omitted to not give away too much of the answer.
                 //Append word to misspelled. 
-                //Increment num_misspelled. 
+		strncpy(misspelled[num_misspelled], word, strlen(word));
+                //Increment num_misspelled.
+		num_misspelled++;
+    		}
+    		word = strtok(NULL, " "); // this will continue parsing the same string (see manual for strtok, first paragraph under description http://man7.org/linux/man-pages/man3/strtok.3.html)
+	} 
+}
     //Return num_misspelled. 
     return num_misspelled;
 }
