@@ -21,7 +21,7 @@ test: dictionary.o spell.o test.o
 	./test_main
 
 prog: dictionary.o spell.o main.o
-	gcc -Wall -o spell_check dictionary.o spell.o main.o
+	gcc -Wall -g -o spell_check dictionary.o spell.o main.o
 
 debug: dictionary.o spell.o test.o
 	gcc --enable-checking -Wall -g -O0 -Q -o debug_spell_test test_main.o dictionary.o spell.o -lcheck -lm -lrt -lpthread -lsubunit
