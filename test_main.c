@@ -74,6 +74,22 @@ START_TEST(test_check_word_normal)
 }
 END_TEST
 
+START_TEST(test_check_words_foreign)
+{
+	hashmap_t hashtable[HASH_SIZE];
+	load_dictionary(DICTIONARY, hashtable);
+	char *misspelled[MAX_MISSPELLED];
+	FILE *fp = fopen("arabic.txt", "r");
+	if (fp == NULL) {printf("pointer is NULL"); exit(1);}
+	int num_misspelled = check_words(fp, hashtable, misspelled);
+	//Non-English words considered misspelled. Cannot be counted as spelled correctly with no dictionary for comparison.
+	ck_assert(num_misspelled == 2);
+	for (int i = 0; i < num_misspelled; i++){
+		free(misspelled[i]);
+	}
+}
+END_TEST
+
 START_TEST(test_check_words_number)
 {
 	hashmap_t hashtable[HASH_SIZE];
@@ -159,6 +175,7 @@ check_word_suite(void)
     tcase_add_test(check_word_case, test_check_words_normal);
     tcase_add_test(check_word_case, test_check_words_number);
     tcase_add_test(check_word_case, test_check_words_long);
+    tcase_add_test(check_word_case, test_check_words_foreign);
     tcase_add_test(check_word_case, test_dictionary_normal);
     tcase_add_test(check_word_case, test_check_word_buffer_overflow);
     suite_add_tcase(suite, check_word_case);
