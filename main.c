@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define DICTIONARY "wordlist.txt"
-
 void freenode(node *tobereleased) {
 	if (tobereleased == NULL){
 		return;
@@ -12,11 +10,11 @@ void freenode(node *tobereleased) {
 	free(tobereleased);
 }
 
-int main(void) {
+int main(int argc, char *argv[]) {
 	
 	hashmap_t hashtable[HASH_SIZE];
-	load_dictionary(DICTIONARY, hashtable);
-	FILE *fp = fopen("test1.txt", "r");
+	load_dictionary(argv[2], hashtable);
+	FILE *fp = fopen(argv[1], "r");
 	char *misspelled[MAX_MISSPELLED];
 	if (fp == NULL) {printf("File pointer is NULL"); exit(1);}
 	int num_misspelled = check_words(fp, hashtable, misspelled);
@@ -28,12 +26,6 @@ int main(void) {
 	start = hashtable[i];
 	freenode(start);
 	}
-
-	//free(start->next);	
-
-	//free(hashtable);
-	fclose(fp);
-//	free(misspelled);
 	
 	return 1;
 }

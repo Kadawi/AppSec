@@ -6,17 +6,38 @@
 #define DICTIONARY "wordlist.txt"
 #define TESTDICT "test_worlist.txt"
 
-/*
+void freenode(node *tobereleased) {
+	if (tobereleased == NULL){
+		return;
+	}
+	freenode(tobereleased->next);
+	free(tobereleased);
+}	
+
+
 START_TEST(test_dictionary_normal)
 {
     hashmap_t hashtable[HASH_SIZE];
     ck_assert(load_dictionary(TESTDICT, hashtable));
+    const char* first = "first";
+    const char* second = "second";
+    const char* third = "third";
+	    const char* test = "test";
+    ck_assert(strcmp(hashtable[(hash_function(first))]->word, first) == 0); 
+    ck_assert(strcmp(hashtable[(hash_function(second))]->word, second) == 0); 
+    ck_assert(strcmp(hashtable[(hash_function(third))]->word, third) == 0); 
+    ck_assert(strcmp(hashtable[(hash_function(test))]->word, test) == 0); 
     // Here we can test if certain words ended up in certain buckets
     // to ensure that our load_dictionary works as intended. I leave
     // this as an exercise.
+    node* start = malloc(sizeof(node));
+    for(int h = 0; h < HASH_SIZE; h++){
+	    start = hashtable[h];
+	    freenode(start);
+    }
 }
 END_TEST
-*/
+
 
 START_TEST(test_check_word_buffer_overflow){
 	hashmap_t hashtable[HASH_SIZE];
@@ -25,27 +46,30 @@ START_TEST(test_check_word_buffer_overflow){
 	for (int i = 0; i<499999; i++) incorrect_word[i] = 'A';
 	incorrect_word[499999] = '\0';
 	ck_assert(!check_word(incorrect_word, hashtable));
-	free(hashtable);
-	free(incorrect_word);
+    node* start = malloc(sizeof(node));
+    for(int h = 0; h < HASH_SIZE; h++){
+	    start = hashtable[h];
+	    freenode(start);
+    }
 }
 END_TEST
 
 START_TEST(test_check_word_normal)
 {
-    //printf("begin check word test\n");
     hashmap_t hashtable[HASH_SIZE];
     load_dictionary(DICTIONARY, hashtable);
     const char* correct_word = "Justice";
     const char* punctuation_word_2 = "pl.ace";
-    //const char* question_word = "?howdy?";
+    const char* question_word = "?question?";
     ck_assert(check_word(correct_word, hashtable));
     ck_assert(!check_word(punctuation_word_2, hashtable));
-    //ck_assert(check_word(question_word, hashtable));
+    ck_assert(!check_word(question_word, hashtable));
     // Test here: What if a word begins and ends with "?
-    //printf("end of check word test\n");
-    free(hashtable);
-    free(correct_word);
-    free(punctuation_word_2);
+    node* start = malloc(sizeof(node));
+    for(int h = 0; h < HASH_SIZE; h++){
+	    start = hashtable[h];
+	    freenode(start);
+    }
 }
 END_TEST
 
@@ -59,19 +83,23 @@ START_TEST(test_check_words_long)
     int num_misspelled = check_words(fp, hashtable, misspelled);
     printf("misspelled is %d\n", num_misspelled);
     ck_assert(num_misspelled == 0);
-    free(hashtable);
-    free(misspelled);
-    fclose(fp);
-    free(num_misspelled);
+    //The code after this point was causing a double free error, and signal 6. 
+    //node* start = malloc(sizeof(node));
+    //for(int h = 0; h < HASH_SIZE; h++){
+	//    start = hashtable[h];
+	  //  freenode(start);
+    //}
+    //for (int i = 0; i < num_misspelled; i++){
+    //free(misspelled[i]);
+    //}
+    //fclose(fp);
 }
 END_TEST
 
 START_TEST(test_check_words_normal)
 {
-    //printf("one\n");	
     hashmap_t hashtable[HASH_SIZE];
     load_dictionary(DICTIONARY, hashtable);
-    //printf("two\n");
     char* expected[3];
     expected[0] = "sogn";
     expected[1] = "skyn";
@@ -88,14 +116,18 @@ START_TEST(test_check_words_normal)
     ck_assert_msg(strcmp(misspelled[0], expected[0]) == 0);
     ck_assert_msg(strcmp(misspelled[1], expected[1]) == 0);
     ck_assert_msg(strcmp(misspelled[2], expected[2]) == 0);
-    free(hashtable);
-    free(expected);
-    free(misspelled);
+    for (int i = 0; i < 3; i++){
+    free(expected[i]);
+    }
+    node* start = malloc(sizeof(node));
+    for(int h = 0; h < HASH_SIZE; h++){
+	    start = hashtable[h];
+	    freenode(start);
+    }
+    //for(int m=0; m<MAX_MISSPELLED; m++){
+//	   free(misspelled[m]);
+//	  }
     fclose(fp);
-    free(num_misspelled);
-    free(test);
-    free(len1);
-    free(len2);
 }
 END_TEST
 
@@ -109,6 +141,7 @@ check_word_suite(void)
     tcase_add_test(check_word_case, test_check_word_normal);
     tcase_add_test(check_word_case, test_check_words_normal);
     tcase_add_test(check_word_case, test_check_words_long);
+    tcase_add_test(check_word_case, test_dictionary_normal);
     tcase_add_test(check_word_case, test_check_word_buffer_overflow);
     suite_add_tcase(suite, check_word_case);
 
@@ -117,8 +150,6 @@ check_word_suite(void)
 
 int main(void)
 {
-    //fflush(stdout);
-    //printf("Main\n");	
     int failed;
     Suite *suite;
     SRunner *runner;
@@ -129,8 +160,6 @@ int main(void)
     failed = srunner_ntests_failed(runner);
     srunner_free(runner);
     free(suite);
-    free(runner);
-    free(check_word_suite);
     return (failed == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
 }
 

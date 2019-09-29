@@ -21,15 +21,15 @@ test: dictionary.o spell.o test.o
 	./test_main
 
 prog: dictionary.o spell.o main.o
-	gcc -Wall -g -o spell_check dictionary.o spell.o main.o
+	gcc --enable-checking -Wall -g -O0 -Q -o spell_check dictionary.o spell.o main.o
 
 debug: dictionary.o spell.o test.o
 	gcc --enable-checking -Wall -g -O0 -Q -o debug_spell_test test_main.o dictionary.o spell.o -lcheck -lm -lrt -lpthread -lsubunit
 	./debug_spell_test
 
 clean:
-	rm dictionary.o spell.o main.o test_main.o check_spell.o spell_check debug_spell debug_spell_test dictionary.h.gch test_main
+	rm dictionary.o spell.o main.o test_main.o check_spell.o spell_check debug_spell debug_spell_test dictionary.h.gch test_main main
 
 cleanall:clean
-	rm spell_check debug_spell debug_spell_test
+	rm spell_check debug_spell debug_spell_test main
 	

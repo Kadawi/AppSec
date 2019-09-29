@@ -14,7 +14,9 @@ bool check_word(const char* word, hashmap_t hashtable[])
     //While cursor is not NULL: 
 	while(cursor != NULL){
         //If word equals cursor->word: 
-		if((strcmp(word, cursor->word)) == 0) return true;
+		if((strcmp(word, cursor->word)) == 0) {
+			//free(cursor);
+			return true;}
 	//return True. 
 	//set curosr to cursor->next
 		cursor = cursor->next;
@@ -36,6 +38,7 @@ bool check_word(const char* word, hashmap_t hashtable[])
         //Set curosr to cursor->next. 
 		cursor = cursor->next;
 	}
+	
 	    	//return False. 
     return 0;
 } 
@@ -143,8 +146,8 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
     		if(!check_word(modword, hashtable))
     		{
                 //Append word to misspelled. 
-		misspelled[num_misspelled] = malloc(strlen(word)+1);	
-		strncpy(misspelled[num_misspelled], modword, strlen(word)+1);
+		misspelled[num_misspelled] = malloc(strlen(modword)+1);	
+		strncpy(misspelled[num_misspelled], modword, strlen(modword)+1);
                 //Increment num_misspelled.
 		num_misspelled++;
     		}
@@ -155,8 +158,9 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
     free(line);
     free(tmp);
     free(word);
-    for(int i = 0; i < num_misspelled; i++) {
-	free(misspelled[i]);
+    fclose(fp);
+    for(int g = 0; g < num_misspelled; g++) {
+	free(misspelled[g]);
     }
     return num_misspelled;
 }
