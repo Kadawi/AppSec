@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
 	char *misspelled[MAX_MISSPELLED];
 	if (fp == NULL) {printf("File pointer is NULL"); exit(1);}
 	int num_misspelled = check_words(fp, hashtable, misspelled);
-	printf("Test1.txt contains %d misspelled words.\n", num_misspelled);
+	printf("Test contains %d misspelled words.\n", num_misspelled);
 	
 	node* start = malloc(sizeof(node));
 
@@ -26,6 +26,8 @@ int main(int argc, char *argv[]) {
 	start = hashtable[i];
 	freenode(start);
 	}
+
+	//fclose(fp);
 	
 	return 1;
 }
