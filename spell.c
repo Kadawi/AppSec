@@ -126,6 +126,7 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
 	// assume there exists a char * tmp and a char * word.
 	if (line == NULL) {printf("Pointer not allocated.\n"); exit(1);} 
 	word = strtok(line, " ");
+	int number = 0;
 	while(word != NULL) // explicitly, but you could also do while(word)
 	{
     	// here you do some transformations on the word, such as removing punctuation and newlines. Code isn't included so as to not give away too much of the answ
@@ -136,16 +137,21 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
 		//copy contents to char array
 		strncpy(modword, word, strlen(word)+1);
 		//check for all numeric characters
+		number = 0;
 		for(int n=0; n < (strlen(word)+1); n++){
-			if((n == strlen(word)) && isdigit(modword[n])) { word = strtok(NULL, " ");}
-			else if(isdigit(modword[n])) continue;
-			else if(!isdigit(modword[n])) break;
+			if(modword[n] == 10) {word = strtok(NULL, " "); number = 1; break;}
+			if(n == strlen(word)) {word = strtok(NULL, " "); number = 1; break;}
+			else if(isdigit(modword[n])) {continue;}
+			else if(!isdigit(modword[n])) {break;}
 		}
+		if (number == 1) continue;
+		//check if first character is punctuation
 		if(!(isalpha(modword[0]))){
 			for(int i = 0; i < (strlen(word)+1); i++){
 				modword[i] = modword[i+1];
 			}
 		}
+		//replace any ending punctuation with null char
 		if(!(isalpha(modword[strlen(word)-1]))) modword[strlen(word)-1] = end[0];
 		for (int i = strlen(word)-2; i < strlen(word)+1; i++) {
 			if (modword[i] == '.') modword[i] = end[0];
@@ -158,6 +164,8 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
 		strncpy(misspelled[num_misspelled], modword, strlen(modword)+1);
                 //Increment num_misspelled.
 		num_misspelled++;
+		//printf("misspelled word is %s\n", misspelled[num_misspelled-1]);
+		//printf("num_misspelled is %d\n", num_misspelled);
     		}
     		word = strtok(NULL, " "); // this will continue parsing the same string (see manual for strtok, first paragraph under description http://man7.org/linux/man-pages/man3/strtok.3.html)
 	} 
