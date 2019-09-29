@@ -31,7 +31,6 @@ int main(int argc, char *argv[]) {
 		free(misspelled[j]);
 	}
 
-	//fclose(fp);
-	
+	//fclose(fp); closed in spell.c
 	return 1;
 }
