@@ -27,6 +27,10 @@ int main(int argc, char *argv[]) {
 	freenode(start);
 	}
 
+	for(int j = 0; j < num_misspelled; j++){
+		free(misspelled[j]);
+	}
+
 	//fclose(fp);
 	
 	return 1;

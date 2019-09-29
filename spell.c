@@ -103,12 +103,6 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
 		printf("Line not allocated\n");
 		exit(1);
 	}
-	char* tmp;
-	tmp = malloc((LENGTH+1)*sizeof(char));
-	if (tmp == NULL) {
-		printf("Tmp not allocated\n");
-		exit(1);
-	}
 	char* word;
 	word = malloc((LENGTH+1)*sizeof(char));
 	if (word == NULL) {
@@ -172,7 +166,6 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
 }
     //Return num_misspelled. 
     free(line);
-    free(tmp);
     free(word);
     fclose(fp);
     //Cannot free misspelled[] in this function, because it is needed for comparison in tests
