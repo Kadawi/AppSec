@@ -129,10 +129,18 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
 	while(word != NULL) // explicitly, but you could also do while(word)
 	{
     	// here you do some transformations on the word, such as removing punctuation and newlines. Code isn't included so as to not give away too much of the answ
-		if(strlen(word) > (LENGTH+1)) {/*num_misspelled++;*/
+		//throw away any words longer than length
+		if(strlen(word) > (LENGTH+1)) {
 			word = strtok(NULL, " ");
 		continue;}
+		//copy contents to char array
 		strncpy(modword, word, strlen(word)+1);
+		//check for all numeric characters
+		for(int n=0; n < (strlen(word)+1); n++){
+			if((n == strlen(word)) && isdigit(modword[n])) { word = strtok(NULL, " ");}
+			else if(isdigit(modword[n])) continue;
+			else if(!isdigit(modword[n])) break;
+		}
 		if(!(isalpha(modword[0]))){
 			for(int i = 0; i < (strlen(word)+1); i++){
 				modword[i] = modword[i+1];
@@ -159,8 +167,6 @@ int check_words(FILE* fp, hashmap_t hashtable[], char * misspelled[])
     free(tmp);
     free(word);
     fclose(fp);
-    for(int g = 0; g < num_misspelled; g++) {
-	free(misspelled[g]);
-    }
+    //Cannot free misspelled[] in this function, because it is needed for comparison in tests
     return num_misspelled;
 }
